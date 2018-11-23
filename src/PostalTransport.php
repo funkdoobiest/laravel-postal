@@ -22,11 +22,12 @@ class PostalTransport extends Transport
     public function __construct($domain, $key)
     {
         $this->client = new Client($domain, $key);
-        $this->message = new SendMessage($this->client);
     }
 
     public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
     {
+        $this->message = new SendMessage($this->client);
+
         $this->beforeSendPerformed($message);
 
         $recipients = [];
@@ -92,7 +93,7 @@ class PostalTransport extends Transport
             throw new \BadMethodCallException($error->getMessage(), $error->getCode(), $error);
         }
 
-        $message->postal = $response;
+        $this->sendPerformed($message);
 
         return $response;
     }
